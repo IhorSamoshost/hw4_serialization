@@ -3,9 +3,9 @@ import java.time.LocalDate;
 public class Human {
     private String firstName;
     private String lastName;
-    @JsonValue (name = "fun")
+    @JsonValue(name = "fun")
     private String hobby;
-    @CustomDateFormat(format="dd-MM-yyyy")
+    @CustomDateFormat(format = "dd-MM-yyyy")
     private LocalDate birthDate;
 
     public Human(String firstName, String lastName, String hobby, LocalDate birthDate) {
@@ -40,17 +40,4 @@ public class Human {
                 ", birthDate=" + birthDate.toString() +
                 '}';
     }
-
-    //    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || getClass() != o.getClass()) return false;
-//        User user = (User) o;
-//        return getUsername().equals(user.getUsername());
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(getUsername());
-//    }
 }

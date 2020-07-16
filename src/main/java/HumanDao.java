@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class HumanDao {
     private static final String PATH_HUMAN_DB_FILE = "src\\main\\resources\\humanDB.txt";
@@ -13,7 +14,7 @@ public class HumanDao {
 
     public static void createHumanFile(List<Human> humanList) {
         try (FileWriter fileWriter = new FileWriter(PATH_HUMAN_DB_FILE, true)) {
-            for(Human h:humanList) {
+            for (Human h : humanList) {
                 fileWriter.append(h.getFirstName() + SEPARATOR + h.getLastName() + SEPARATOR +
                         h.getHobby() + SEPARATOR + h.getBirthDate().toString() + "\n");
             }
@@ -22,8 +23,8 @@ public class HumanDao {
         }
     }
 
-    public static List<Human> getHumansFromFile() {
-        List<Human> humanList = new ArrayList<>();
+    public static List<Object> getHumansFromFile() {
+        List<Object> humanList = new ArrayList<>();
         List<String> humanLines = new ArrayList<>();
         try {
             humanLines = Files.readAllLines(Paths.get(PATH_HUMAN_DB_FILE));
@@ -38,33 +39,26 @@ public class HumanDao {
         return humanList;
     }
 
-    public static void toJson(List<Human> humanList) {
+    public static void toJson(List<Object> objectList) {
         CustomAnnotationHandler customAnnotationHandler = new CustomAnnotationHandler();
-//        List <String> fieldNamesList = customAnnotationHandler.checkValueAnnotaition();
-        try {
-            System.out.println("{ [");
-            for (Human human : humanList) {
-                System.out.println("{");
-                System.out.println("\"" + Human.class.getDeclaredField("firstName").getName() + "\" : \"" + human.getFirstName() + "\",");
-                System.out.println("\"" + Human.class.getDeclaredField("lastName").getName() + "\" : \"" + human.getLastName() + "\",");
-                System.out.println("\"" + customAnnotationHandler.checkValueAnnotaition() + "\" : \"" + human.getHobby() + "\",");
-                System.out.println("\"" + Human.class.getDeclaredField("birthDate").getName() + "\" : \"" +
-                        customAnnotationHandler.checkDateFormatAnnotaition(human) + "\"");
-                System.out.println("}");
-            }
-            System.out.println("] }");
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+        System.out.println("{ [");
+        for (Object object : objectList) {
+            Map<String, String> objectMap = customAnnotationHandler.checkForAnnotations(object);
+            System.out.println("{");
+            objectMap.forEach((key, value) -> System.out.println("\"" + key + "\" : \"" + value + "\","));
+            System.out.println("}");
         }
+        System.out.println("] }");
     }
 
+    // Этот мэйн нужен только для того, чтобы создать текстовый файл с бозой данных, содержащей объекты Human:
     public static void main(String[] args) {
         List<Human> humanList = Arrays.asList(
                 new Human("Ivan", "Ivanov", "Art", LocalDate.of(1990, 9, 20))
                 , new Human("Petr", "Petrov", "Sport", LocalDate.of(2000, 2, 17))
         );
         createHumanFile(humanList);
-        for (Human h : getHumansFromFile()) {
+        for (Object h : getHumansFromFile()) {
             System.out.println(h);
         }
     }
