@@ -8,4 +8,3 @@ import java.lang.annotation.Target;
 public @interface JsonValue {
     String name();
 }
-

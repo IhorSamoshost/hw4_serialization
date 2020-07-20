@@ -3,10 +3,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class HumanDao {
     private static final String PATH_HUMAN_DB_FILE = "src\\main\\resources\\humanDB.txt";
@@ -42,11 +39,20 @@ public class HumanDao {
     public static void toJson(List<Object> objectList) {
         CustomAnnotationHandler customAnnotationHandler = new CustomAnnotationHandler();
         System.out.println("{ [");
-        for (Object object : objectList) {
-            Map<String, String> objectMap = customAnnotationHandler.checkForAnnotations(object);
+        Iterator<Object> objectListIterator = objectList.iterator();
+        for (Object nextObject : objectList) {
+            objectListIterator.next();
+            Map<String, String> objectMap = customAnnotationHandler.checkForAnnotations(nextObject);
+            Iterator<String> fieldMapIterator = objectMap.keySet().iterator();
             System.out.println("{");
-            objectMap.forEach((key, value) -> System.out.println("\"" + key + "\" : \"" + value + "\","));
-            System.out.println("}");
+            for (String key : objectMap.keySet()) {
+                fieldMapIterator.next();
+                System.out.print("\"" + key + "\" : \"" + objectMap.get(key) + "\"");
+                if (fieldMapIterator.hasNext()) System.out.println(",");
+                else System.out.println();
+            }
+            if (objectListIterator.hasNext()) System.out.println("},");
+            else System.out.println("}");
         }
         System.out.println("] }");
     }
@@ -56,6 +62,7 @@ public class HumanDao {
         List<Human> humanList = Arrays.asList(
                 new Human("Ivan", "Ivanov", "Art", LocalDate.of(1990, 9, 20))
                 , new Human("Petr", "Petrov", "Sport", LocalDate.of(2000, 2, 17))
+                , new Human("Michailo", "Michailov", "Binge", LocalDate.of(1967, 11, 12))
         );
         createHumanFile(humanList);
         for (Object h : getHumansFromFile()) {

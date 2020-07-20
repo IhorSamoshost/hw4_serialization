@@ -3,6 +3,7 @@ import java.time.LocalDate;
 public class Human {
     private String firstName;
     private String lastName;
+
     @JsonValue(name = "fun")
     private String hobby;
     @CustomDateFormat(format = "dd-MM-yyyy")
